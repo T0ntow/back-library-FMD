@@ -1,27 +1,45 @@
-const connection = require('../connection');
+// TypeScript (ou JS com JSDoc)
+export interface UseCaseError {
+    status: number;
+    message: string;
+    errors: {
+      [field: string]: string[];
+    };
+}
 
+// Função helper para criar o erro
+const createUseCaseError = (status: number, message: string, fieldErrors: { [field: string]: string[] } = {}): UseCaseError => {
+    return { status, message, errors: fieldErrors };
+};
+
+// Exemplo no endpoint
 const novoAluno = (req, res) => {
     const { matricula, nome, cpf, data_nascimento, id_turma } = req.body;
 
-    // Verificar se o CPF já está cadastrado
     const checkExistingCPFQuery = 'SELECT COUNT(*) AS count FROM Aluno WHERE cpf = ?';
 
     connection.query(checkExistingCPFQuery, [cpf], (checkErr, checkResult) => {
         if (checkErr) {
-            console.error('Erro ao verificar CPF no banco de dados:', checkErr);
-            res.status(500).json({ error: 'Erro ao verificar CPF no banco de dados' });
-            return;
+            console.error('Erro ao verificar CPF:', checkErr);
+            const error: UseCaseError = createUseCaseError(
+                500,
+                'Erro ao verificar CPF no banco de dados',
+                { database: [checkErr.code] } // passando o código do banco no campo 'database'
+            );
+            return res.status(error.status).json(error);
         }
 
         const existingCount = checkResult[0].count;
 
         if (existingCount > 0) {
-            // Já existe um aluno com este CPF
-            res.status(400).json({ error: 'Já existe um aluno com este CPF' });
-            return;
+            const error: UseCaseError = createUseCaseError(
+                400,
+                'Já existe um aluno com este CPF',
+                { cpf: ['CPF já cadastrado'] }
+            );
+            return res.status(error.status).json(error);
         }
 
-        // Se o CPF não existe, insere o aluno
         const sql = `
             INSERT INTO Aluno (matricula, nome, cpf, data_nascimento, id_turma) 
             VALUES (?, ?, ?, ?, ?);
@@ -31,15 +49,16 @@ const novoAluno = (req, res) => {
 
         connection.query(sql, values, (err, result) => {
             if (err) {
-                console.error('Erro ao inserir dados no banco de dados:', err);
-                res.status(500).json({ error: 'Erro ao inserir dados no banco de dados' });
-                return;
+                console.error('Erro ao inserir dados:', err);
+                const error: UseCaseError = createUseCaseError(
+                    500,
+                    'Erro ao inserir dados no banco de dados',
+                    { database: [err.code] }
+                );
+                return res.status(error.status).json(error);
             }
 
-            console.log('Aluno inserido com sucesso no banco de dados');
             res.status(201).json({ message: 'Aluno inserido com sucesso' });
         });
     });
 };
-
-module.exports = { novoAluno };
