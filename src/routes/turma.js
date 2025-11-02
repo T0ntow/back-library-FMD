@@ -14,9 +14,6 @@ const { novaTurma } = require('../controllers/turmaController');
  *         - serie
  *         - ano_letivo
  *       properties:
- *         id:
- *           type: integer
- *           example: 1
  *         curso:
  *           type: string
  *           example: "Informática"

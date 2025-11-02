@@ -1,7 +1,7 @@
 const connection = require('../connection');
 
 const novaTurma = (req, res) => {
-    const { id, curso, serie, ano_letivo } = req.body;
+    const { curso, serie, ano_letivo } = req.body;
 
     // Verificar se a turma já existe --exatamente igual--
     const checkExistingTurmaQuery = `
@@ -10,7 +10,7 @@ const novaTurma = (req, res) => {
         WHERE curso = ? AND serie = ? AND ano_letivo = ?
     `;
 
-    connection.query(checkExistingTurmaQuery, [id, curso, serie, ano_letivo], (checkErr, checkResult) => {
+    connection.query(checkExistingTurmaQuery, [curso, serie, ano_letivo], (checkErr, checkResult) => {
         if (checkErr) {
             console.error('Erro ao verificar a turma no banco de dados:', checkErr);
             res.status(500).json({ error: 'Erro ao verificar a turma no banco de dados' });
@@ -26,8 +26,8 @@ const novaTurma = (req, res) => {
 
         // Inserir nova turma
         const sql = `
-            INSERT INTO Turma (id, curso, serie, ano_letivo) 
-            VALUES (?, ?, ?, ?)
+            INSERT INTO Turma (curso, serie, ano_letivo) 
+            VALUES (?, ?, ?)
         `;
 
         const values = [id, curso, serie, ano_letivo];
