@@ -33,12 +33,12 @@ const {
  *           example: 2027
  *         isbn_livro:
  *           type: string
- *           example: "978-85-7522-123-4567"
+ *           example: "9788575221234567"
  */
 
 /**
  * @swagger
- * /exemplar:
+ * /exemplares/novo:
  *   post:
  *     summary: Cadastra um novo exemplar
  *     tags: [Exemplares]
@@ -67,11 +67,11 @@ const {
  *       500:
  *         description: Erro interno do servidor
  */
-router.post('/exemplar', novoExemplar);
+router.post('/exemplares/novo', novoExemplar);
 
 /**
  * @swagger
- * /exemplar:
+ * /exemplares/listar:
  *   get:
  *     summary: Lista todos os exemplares
  *     tags: [Exemplares]
@@ -81,11 +81,11 @@ router.post('/exemplar', novoExemplar);
  *       500:
  *         description: Erro interno do servidor
  */
-router.get('/exemplar', listarExemplares);
+router.get('/exemplares/listar', listarExemplares);
 
 /**
  * @swagger
- * /exemplar/{id}:
+ * /exemplares/buscar/{id}:
  *   get:
  *     summary: Busca exemplar por ID
  *     tags: [Exemplares]
@@ -104,11 +104,11 @@ router.get('/exemplar', listarExemplares);
  *       500:
  *         description: Erro interno do servidor
  */
-router.get('/exemplar/:id', buscarExemplarPorId);
+router.get('/exemplares/buscar/:id', buscarExemplarPorId);
 
 /**
  * @swagger
- * /exemplar/livro/{isbn}:
+ * /exemplares/livro/{isbn}:
  *   get:
  *     summary: Lista exemplares de um livro específico
  *     tags: [Exemplares]
@@ -125,11 +125,11 @@ router.get('/exemplar/:id', buscarExemplarPorId);
  *       500:
  *         description: Erro interno do servidor
  */
-router.get('/exemplar/livro/:isbn', listarExemplaresPorLivro);
+router.get('/exemplares/livro/:isbn', listarExemplaresPorLivro);
 
 /**
  * @swagger
- * /exemplar/{id}:
+ * /exemplares/atualizar/{id}:
  *   put:
  *     summary: Atualiza exemplar
  *     tags: [Exemplares]
@@ -164,11 +164,11 @@ router.get('/exemplar/livro/:isbn', listarExemplaresPorLivro);
  *       500:
  *         description: Erro interno do servidor
  */
-router.put('/exemplar/:id', atualizarExemplar);
+router.put('/exemplares/atualizar/:id', atualizarExemplar);
 
 /**
  * @swagger
- * /exemplar/{id}:
+ * /exemplares/deletar/{id}:
  *   delete:
  *     summary: Deleta exemplar
  *     tags: [Exemplares]
@@ -187,6 +187,6 @@ router.put('/exemplar/:id', atualizarExemplar);
  *       500:
  *         description: Erro interno do servidor
  */
-router.delete('/exemplar/:id', deletarExemplar);
+router.delete('/exemplares/deletar/:id', deletarExemplar);
 
 module.exports = router;
