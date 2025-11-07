@@ -26,7 +26,7 @@ const {
  *       properties:
  *         isbn:
  *           type: string
- *           example: "978-85-7522-123-4"
+ *           example: "9788575221234"
  *         nome:
  *           type: string
  *           example: "Matemática Básica"
@@ -53,7 +53,7 @@ const {
 
 /**
  * @swagger
- * /livro:
+ * /livros/novo:
  *   post:
  *     summary: Cadastra um novo livro
  *     tags: [Livros]
@@ -76,17 +76,17 @@ const {
  *                   example: "Livro inserido com sucesso"
  *                 isbn:
  *                   type: string
- *                   example: "978-85-7522-123-4"
+ *                   example: "9788575221234"
  *       400:
  *         description: Erro de validação ou livro já existe
  *       500:
  *         description: Erro interno do servidor
  */
-router.post('/livro', novoLivro);
+router.post('/livros/novo', novoLivro);
 
 /**
  * @swagger
- * /livro:
+ * /livros/listar:
  *   get:
  *     summary: Lista todos os livros
  *     tags: [Livros]
@@ -102,11 +102,11 @@ router.post('/livro', novoLivro);
  *       500:
  *         description: Erro interno do servidor
  */
-router.get('/livro', listarLivros);
+router.get('/livros/listar', listarLivros);
 
 /**
  * @swagger
- * /livro/{isbn}:
+ * /livros/buscar/{isbn}:
  *   get:
  *     summary: Busca um livro pelo ISBN
  *     tags: [Livros]
@@ -129,11 +129,11 @@ router.get('/livro', listarLivros);
  *       500:
  *         description: Erro interno do servidor
  */
-router.get('/livro/:isbn', buscarLivroPorIsbn);
+router.get('/livros/buscar/:isbn', buscarLivroPorIsbn);
 
 /**
  * @swagger
- * /livro/{isbn}:
+ * /livros/atualizar/{isbn}:
  *   put:
  *     summary: Atualiza um livro pelo ISBN
  *     tags: [Livros]
@@ -173,11 +173,11 @@ router.get('/livro/:isbn', buscarLivroPorIsbn);
  *       500:
  *         description: Erro interno do servidor
  */
-router.put('/livro/:isbn', atualizarLivro);
+router.put('/livros/atualizar/:isbn', atualizarLivro);
 
 /**
  * @swagger
- * /livro/{isbn}:
+ * /livros/deletar/{isbn}:
  *   delete:
  *     summary: Deleta um livro pelo ISBN
  *     tags: [Livros]
@@ -198,6 +198,6 @@ router.put('/livro/:isbn', atualizarLivro);
  *       500:
  *         description: Erro interno do servidor
  */
-router.delete('/livro/:isbn', deletarLivro);
+router.delete('/livros/deletar/:isbn', deletarLivro);
 
 module.exports = router;

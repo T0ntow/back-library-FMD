@@ -4,6 +4,7 @@ const connection = require('../connection');
 // CREATE - Criar novo livro
 const novoLivro = (req, res) => {
     const { isbn, nome, autor, editora, disciplina, serie, ano_publicacao, edicao } = req.body;
+    const isbnNumerico = isbn.replace(/\D/g, '');
 
     // Inserir novo livro direto (o banco detecta duplicação)
     const sql = `
@@ -11,7 +12,7 @@ const novoLivro = (req, res) => {
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
-    const values = [isbn, nome, autor, editora, disciplina, serie, ano_publicacao, edicao];
+    const values = [isbnNumerico, nome, autor, editora, disciplina, serie, ano_publicacao, edicao];
 
     connection.query(sql, values, (err, result) => {
         if (err) {
@@ -52,7 +53,7 @@ const novoLivro = (req, res) => {
             return res.status(error.status).json(error);
         }
 
-        res.status(201).json({ message: 'Livro inserido com sucesso', isbn: isbn });
+        res.status(201).json({ message: 'Livro inserido com sucesso', isbn: isbnNumerico });
     });
 };
 
@@ -78,10 +79,11 @@ const listarLivros = (req, res) => {
 // READ - Buscar livro por ISBN
 const buscarLivroPorIsbn = (req, res) => {
     const { isbn } = req.params;
+    const isbnNumerico = isbn.replace(/\D/g, '');
 
     const sql = 'SELECT * FROM Livro WHERE isbn = ?';
 
-    connection.query(sql, [isbn], (err, results) => {
+    connection.query(sql, [isbnNumerico], (err, results) => {
         if (err) {
             console.error('Erro ao buscar livro:', err);
             const error = createUseCaseError(
@@ -108,6 +110,7 @@ const buscarLivroPorIsbn = (req, res) => {
 // UPDATE - Atualizar livro por ISBN
 const atualizarLivro = (req, res) => {
     const { isbn } = req.params;
+    const isbnNumerico = isbn.replace(/\D/g, '');
     const { nome, autor, editora, disciplina, serie, ano_publicacao, edicao } = req.body;
 
     const sql = `
@@ -116,7 +119,7 @@ const atualizarLivro = (req, res) => {
         WHERE isbn = ?
     `;
 
-    const values = [nome, autor, editora, disciplina, serie, ano_publicacao, edicao, isbn];
+    const values = [nome, autor, editora, disciplina, serie, ano_publicacao, edicao, isbnNumerico];
 
     connection.query(sql, values, (err, result) => {
         if (err) {
@@ -138,18 +141,19 @@ const atualizarLivro = (req, res) => {
             return res.status(error.status).json(error);
         }
 
-        res.status(200).json({ message: 'Livro atualizado com sucesso', isbn: isbn });
+        res.status(200).json({ message: 'Livro atualizado com sucesso', isbn: isbnNumerico });
     });
 };
 
 // DELETE - Deletar livro por ISBN
 const deletarLivro = (req, res) => {
     const { isbn } = req.params;
+    const isbnNumerico = isbn.replace(/\D/g, '');
 
     // Verificar se existem exemplares deste livro
     const checkExemplaresQuery = 'SELECT COUNT(*) AS count FROM Exemplar WHERE isbn_livro = ?';
 
-    connection.query(checkExemplaresQuery, [isbn], (checkErr, checkResult) => {
+    connection.query(checkExemplaresQuery, [isbnNumerico], (checkErr, checkResult) => {
         if (checkErr) {
             console.error('Erro ao verificar exemplares:', checkErr);
             const error = createUseCaseError(
@@ -174,7 +178,7 @@ const deletarLivro = (req, res) => {
         // Deletar o livro
         const sql = 'DELETE FROM Livro WHERE isbn = ?';
 
-        connection.query(sql, [isbn], (err, result) => {
+        connection.query(sql, [isbnNumerico], (err, result) => {
             if (err) {
                 console.error('Erro ao deletar livro:', err);
                 const error = createUseCaseError(
