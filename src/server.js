@@ -6,6 +6,8 @@ const alunoRoutes = require('./routes/aluno');
 const turmaRoutes = require('./routes/turma');
 const livroRoutes = require('./routes/livro');
 const exemplarRoutes = require('./routes/exemplar');
+const bibliotecarioRoutes = require('./routes/bibliotecario');
+const locacaoRoutes = require('./routes/locacao');
 
 app.use(express.json());
 
@@ -13,6 +15,8 @@ app.use('/', turmaRoutes);
 app.use('/', alunoRoutes);
 app.use('/', livroRoutes);
 app.use('/', exemplarRoutes);
+app.use('/', bibliotecarioRoutes);
+app.use('/', locacaoRoutes);
 
 const PORT = 3000;
 app.listen(PORT, () => {
