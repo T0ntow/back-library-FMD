@@ -214,12 +214,22 @@ const uploadXlsx = (req, res) => {
         a["Sexo"] || ""
       ];
     });
-
+  
+    // Funciona como um UPSERT -> Insere ou atuliza com base na PK
     const sql = `
       INSERT INTO aluno_import
       (matricula, nome, data_nascimento, curso, ano_ingresso, cidade, cor_raca, sexo)
       VALUES ?
+      ON DUPLICATE KEY UPDATE
+        nome = VALUES(nome),
+        data_nascimento = VALUES(data_nascimento),
+        curso = VALUES(curso),
+        ano_ingresso = VALUES(ano_ingresso),
+        cidade = VALUES(cidade),
+        cor_raca = VALUES(cor_raca),
+        sexo = VALUES(sexo)
     `;
+
 
     connection.query(sql, [valores], (err) => {
       if (err) {
