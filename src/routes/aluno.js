@@ -1,6 +1,42 @@
 const express = require('express');
 const router = express.Router();
-const { novoAluno, listarAlunos, buscarAlunoPorMatricula, atualizarAluno, deletarAluno } = require('../controllers/alunoController');
+const {
+  novoAluno,
+  listarAlunos,
+  buscarAlunoPorMatricula,
+  atualizarAluno,
+  deletarAluno,
+  uploadXlsx
+} = require('../controllers/alunoController');
+const upload = require('../utils/multer');
+
+/**
+ * @swagger
+ * /alunos/upload:
+ *   post:
+ *     summary: Importa alunos via arquivo .xlsx
+ *     tags: [Alunos]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               file:
+ *                 type: string
+ *                 format: binary
+ *                 description: Arquivo XLSX contendo os alunos
+ *     responses:
+ *       200:
+ *         description: Arquivo importado com sucesso
+ *       400:
+ *         description: Nenhum arquivo enviado ou inválido
+ *       500:
+ *         description: Erro no servidor
+ */
+router.post('/alunos/upload', upload.single('file'), uploadXlsx);
+
 
 /**
  * @swagger
