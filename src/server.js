@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const swaggerDocs = require('./swagger');
 const app = express();
 
@@ -10,6 +11,16 @@ const bibliotecarioRoutes = require('./routes/bibliotecario');
 const locacaoRoutes = require('./routes/locacao');
 
 app.use(express.json());
+
+// ========= CORS =========
+app.use(
+  cors({
+    origin: "http://localhost:5173", // front React (Vite)
+    methods: "GET,POST,PUT,DELETE",
+    allowedHeaders: "Content-Type, Authorization",
+  })
+);
+// =========================
 
 app.use('/', turmaRoutes);
 app.use('/', alunoRoutes);
