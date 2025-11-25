@@ -59,7 +59,17 @@ const novoLivro = (req, res) => {
 
 // READ - Listar todos os livros
 const listarLivros = (req, res) => {
-    const sql = 'SELECT * FROM Livro ORDER BY nome';
+    const sql = `
+        SELECT 
+            livro.*,
+            COUNT(DISTINCT exemplar.id) AS total_exemplares,
+            COUNT(DISTINCT exemplar.id) - COUNT(DISTINCT lc.id_exemplar) AS exemplares_disponiveis
+        FROM Livro livro
+        LEFT JOIN Exemplar exemplar ON exemplar.isbn_livro = livro.isbn AND exemplar.estado IN ('Novo', 'Regular')
+        LEFT JOIN Locacao lc ON lc.id_exemplar = exemplar.id AND lc.status = 'Aberto'
+        GROUP BY livro.isbn
+        ORDER BY livro.nome
+    `;
 
     connection.query(sql, (err, results) => {
         if (err) {
