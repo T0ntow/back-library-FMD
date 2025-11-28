@@ -92,10 +92,26 @@ const novoExemplar = (req, res) => {
 // READ - Listar todos os exemplares
 const listarExemplares = (req, res) => {
     const sql = `
-        SELECT e.*, l.nome as nome_livro, l.autor
+        SELECT 
+            e.*,
+            l.nome as nome_livro,
+            l.autor,
+            CASE
+            WHEN e.estado IN ('Danificado', 'Perdido')
+                OR YEAR(CURDATE()) > e.ano_descarte
+            THEN 'Indisponível'
+            WHEN EXISTS (
+                SELECT 1 
+                FROM Locacao 
+                WHERE id_exemplar = e.id 
+                    AND status = 'Aberto'
+            )
+            THEN 'Emprestado'
+            ELSE 'Disponível'
+            END as disponibilidade
         FROM Exemplar e
         INNER JOIN Livro l ON e.isbn_livro = l.isbn
-        ORDER BY e.id
+        ORDER BY e.id;
     `;
 
     connection.query(sql, (err, results) => {
