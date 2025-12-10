@@ -40,7 +40,7 @@ const listarLocacoes = (req, res) => {
 const buscarLocacaoPorId = (req, res) => {
     const { id } = req.params;
     const sql = `
-        SELECT Lc.*, A.nome as nome_aluno, L.nome as nome_livro, L.isbn as isbn_livro, E.estado as exemplar_estado
+        SELECT Lc.*, A.nome as nome_aluno, L.nome as nome_livro, L.isbn as isbn_livro, E.estado as estado_exemplar
         FROM Locacao Lc
         JOIN Aluno A ON Lc.matricula_aluno = A.matricula
         JOIN EXEMPLAR E ON Lc.id_exemplar = E.id

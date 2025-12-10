@@ -66,10 +66,14 @@ const listarAlunos = (req, res) => {
 
 const buscarAlunoPorMatricula = (req, res) => {
   const { matricula } = req.params;
-  const sql = "SELECT * FROM Aluno WHERE matricula = ?";
+  const sql = `
+    SELECT A.*, T.curso as curso_turma, T.ano_letivo as ano_letivo_turma, T.serie as serie_turma
+    FROM Aluno A
+    JOIN Turma T ON T.id = A.id_turma
+    WHERE matricula = ?
+  `;
   const sqlLocacoes = `
-    SELECT Lc.*, A.nome AS nome_aluno, L.nome AS nome_livro,
-           L.isbn AS isbn_livro, E.estado AS exemplar_estado
+    SELECT Lc.*, A.nome AS nome_aluno, L.nome AS nome_livro, L.isbn AS isbn_livro
     FROM Locacao Lc
     JOIN Aluno A ON Lc.matricula_aluno = A.matricula
     JOIN Exemplar E ON Lc.id_exemplar = E.id
