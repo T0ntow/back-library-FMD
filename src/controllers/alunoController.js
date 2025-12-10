@@ -66,19 +66,50 @@ const listarAlunos = (req, res) => {
 
 const buscarAlunoPorMatricula = (req, res) => {
   const { matricula } = req.params;
-  const sql = 'SELECT * FROM Aluno WHERE matricula = ?';
+  const sql = "SELECT * FROM Aluno WHERE matricula = ?";
+  const sqlLocacoes = `
+    SELECT Lc.*, A.nome AS nome_aluno, L.nome AS nome_livro,
+           L.isbn AS isbn_livro, E.estado AS exemplar_estado
+    FROM Locacao Lc
+    JOIN Aluno A ON Lc.matricula_aluno = A.matricula
+    JOIN Exemplar E ON Lc.id_exemplar = E.id
+    JOIN Livro L ON E.isbn_livro = L.isbn
+    WHERE Lc.matricula_aluno = ?
+  `;
 
   connection.query(sql, [matricula], (err, result) => {
     if (err) {
-      console.error('Erro ao buscar aluno:', err);
-      const error = createUseCaseError(500, 'Erro ao buscar aluno no banco de dados', { database: [err.code] });
+      console.error("Erro ao buscar aluno:", err);
+      const error = createUseCaseError(
+        500,
+        "Erro ao buscar aluno no banco de dados",
+        { database: [err.code] }
+      );
       return res.status(error.status).json(error);
     }
     if (result.length === 0) {
-      const error = createUseCaseError(404, 'Aluno não encontrado');
+      const error = createUseCaseError(404, "Aluno não encontrado");
       return res.status(error.status).json(error);
     }
-    res.status(200).json(result[0]);
+
+    const aluno = result[0];
+
+    connection.query(
+      sqlLocacoes,
+      [matricula],
+      (errLocacoes, locacoesResult) => {
+        if (errLocacoes) {
+          const error = createUseCaseError(500, "Erro ao buscar locações", {
+            database: [errLocacoes.code],
+          });
+          return res.status(error.status).json(error);
+        }
+
+        aluno.locacoes = locacoesResult;
+
+        res.status(200).json(aluno);
+      }
+    );
   });
 };
 
