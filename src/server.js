@@ -9,6 +9,7 @@ const livroRoutes = require('./routes/livro');
 const exemplarRoutes = require('./routes/exemplar');
 const bibliotecarioRoutes = require('./routes/bibliotecario');
 const locacaoRoutes = require('./routes/locacao');
+const dashboardRoutes = require('./routes/dashboard');
 
 app.use(express.json());
 
@@ -28,6 +29,7 @@ app.use('/', livroRoutes);
 app.use('/', exemplarRoutes);
 app.use('/', bibliotecarioRoutes);
 app.use('/', locacaoRoutes);
+app.use('/', dashboardRoutes);
 
 const PORT = 3000;
 app.listen(PORT, () => {
